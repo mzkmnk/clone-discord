@@ -11,5 +11,5 @@ export default defineNuxtConfig({
     }
   },
 
-  modules: ['@nuxt/icon','@nuxtjs/supabase']
+  modules: ['@nuxt/icon','@nuxtjs/supabase','@nuxt/eslint']
 })
