@@ -5,8 +5,8 @@ const props = defineProps<{ className?: string }>()
 </script>
 
 <template>
-  <div class="w-full relative flex items-center justify-center group">
-    <div class="before:absolute before:flex before:bg-black before:h-1/6 group-hover:before:h-3/6 before:duration-150 before:-translate-y-1/2 before:w-1 before:top-1/2 before:left-0 before:rounded-2xl" />
+  <div class="group relative flex w-full items-center justify-center">
+    <div class="before:absolute before:left-0 before:top-1/2 before:flex before:h-1/6 before:w-1 before:-translate-y-1/2 before:rounded-2xl before:bg-black before:duration-150 group-hover:before:h-3/6" />
     <div :class="cn('cursor-pointer flex items-center justify-center rounded-full p-3 h-16 w-16', 'group-hover:rounded-2xl', props.className)">
       <slot />
     </div>

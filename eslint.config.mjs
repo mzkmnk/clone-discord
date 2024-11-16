@@ -1,5 +1,5 @@
+import tailwind from 'eslint-plugin-tailwindcss'
 import withNuxt from './.nuxt/eslint.config.mjs'
-import tailwind from "eslint-plugin-tailwindcss";
 
 export default withNuxt(
   {
@@ -19,5 +19,5 @@ export default withNuxt(
     },
   },
 ).append(
-    tailwind.configs['flat/recommended']
+  tailwind.configs['flat/recommended'],
 )

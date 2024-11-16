@@ -12,16 +12,16 @@ const login = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center gap-6 w-screen h-screen">
+  <div class="flex h-screen w-screen flex-col items-center justify-center gap-6">
     <p class="text-5xl font-semibold tracking-wider">
       Hello!
     </p>
     <!-- このボタンhtml上ダメかも -->
     <button
-      class="border border-slate-300 hover:border-slate-500 duration-200 rounded-2xl px-5 py-2"
+      class="rounded-2xl border border-slate-300 px-5 py-2 duration-200 hover:border-slate-500"
       @click="login"
     >
-      <div class="flex gap-2 items-center">
+      <div class="flex items-center gap-2">
         <Icon
           name="logos:google-icon"
           size="18"

@@ -4,8 +4,8 @@ import SidebarItem from '~/components/(sidebar)/sidebar-item.vue'
 </script>
 
 <template>
-  <div class="w-80 flex">
-    <div class="flex flex-col items-center justify-start py-2 w-32 bg-slate-200 gap-4">
+  <div class="flex w-80">
+    <div class="flex w-32 flex-col items-center justify-start gap-4 bg-slate-200 py-2">
       <SidebarItem class-name="bg-white">
         <Icon
           :class="cn('text-black', 'group-hover:text-white')"

@@ -13,12 +13,13 @@ export default defineNuxtConfig({
     },
   },
   eslint: {
+    checker: true,
     config: {
       stylistic: {
-        indent:2,
-        quotes:'single',
-        semi: true,
-      }
+        indent: 2, // indent 2
+        quotes: 'single', // singleかdoubleか
+        semi: true, // セミコロンが必要かどうか
+      },
     },
   },
 })
