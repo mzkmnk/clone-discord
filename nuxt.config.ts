@@ -1,4 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import {config} from "dotenv";
+
+config({path:'.env.local'})
+
 export default defineNuxtConfig({
 
   modules: ['@nuxt/icon', '@nuxtjs/supabase', '@nuxt/eslint','@pinia/nuxt'],
@@ -12,8 +17,11 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
+  supabase:{
+  },
+
   eslint: {
-    checker: true,
     config: {
       stylistic: {
         indent: 2, // indent 2
