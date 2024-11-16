@@ -14,7 +14,11 @@ export default defineNuxtConfig({
   },
   eslint: {
     config: {
-      stylistic: true,
+      stylistic: {
+        indent:2,
+        quotes:'single',
+        semi: true,
+      }
     },
   },
 })
