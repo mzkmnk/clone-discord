@@ -1,5 +1,9 @@
 <script setup lang="ts">
+
+const user = useSupabaseUser();
+
 watchEffect(() => {
+  console.dir(user.value,{depth:null});
   navigateTo('/dashboard')
 })
 </script>
