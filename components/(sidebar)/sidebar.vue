@@ -1,9 +1,54 @@
 <script setup lang="ts">
 
-import { cn } from '~/libs/utils'
-import SidebarItem from '~/components/(sidebar)/sidebar-item.vue'
+import {cn, createUUID} from '~/libs/utils'
+import SidebarItem from '~/components/(sidebar)/sidebar-item.vue';
+import Dialog from "~/components/(dialog)/dialog.vue";
+import {useUserStore} from "~/composables/store/user.store";
 
+const { $client } = useNuxtApp();
 
+const { user } = useUserStore();
+
+/** ダイアログのprops */
+const dialogProps = ref<{
+  isOpen: boolean;
+  loading:boolean,
+  servername:string,
+}>({
+  isOpen: false,
+  loading:false,
+  servername:'',
+})
+
+const clickAddGroup = ():void => {
+  dialogProps.value.isOpen = true;
+};
+
+/** ダイアログの戻るボタンの関数 */
+const clickBackButton = () => dialogProps.value.isOpen = false;
+
+/** ダイアログの進むボタン関数 */
+const clickNextButton = async () => {
+  dialogProps.value.loading = true;
+  const groupId:string = createUUID();
+  await $client.group.create.useMutation().mutate({
+    id:groupId,
+    name:dialogProps.value.servername,
+    description:'test description',
+  });
+
+  const data = await $client.group.insertUser.useMutation().mutate({
+    userId:user.id,
+    groupId,
+    role:'admin',
+  })
+
+  dialogProps.value = {
+    isOpen:false,
+    loading:false,
+    servername:'',
+  }
+};
 
 </script>
 
@@ -47,13 +92,32 @@ import SidebarItem from '~/components/(sidebar)/sidebar-item.vue'
           size="30"
         />
       </SidebarItem>
-      <SidebarItem class-name="group-hover:bg-green-500">
+      <SidebarItem class-name="group-hover:bg-green-500" :click="clickAddGroup">
         <Icon
           :class="cn('text-green-500', 'group-hover:text-white')"
           name="ic:outline-plus"
           size="30"
         />
       </SidebarItem>
+      <Dialog :is-open="dialogProps.isOpen">
+        <div class="px-10 py-7 w-full min-h-full rounded-xl bg-white flex flex-col gap-3">
+          <h3 class="text-2xl font-semibold text-gray-700">サーバーを作成</h3>
+          <div class="flex flex-col gap-2 items-start">
+            <p class="font-semibold text-gray-600">サーバー名</p>
+            <input v-model="dialogProps.servername" autofocus class="font-semibold text-gray-800 border w-full rounded-xl h-12 px-2 block focus:outline-none focus:border-indigo-600 focus:ring-indigo-600 focus:ring-1" placeholder="example:nextjs server">
+          </div>
+          <div class="flex items-center justify-end gap-4">
+            <button class="rounded-xl bg-red-600 hover:bg-red-500 text-white p-2 min-w-20" @click="clickBackButton">
+              戻る
+            </button>
+            <button :class="cn('rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white p-2 min-w-20',{
+              'bg-indigo-500':dialogProps.loading || dialogProps.servername === '',
+            })" @click="clickNextButton" :disabled="dialogProps.loading || dialogProps.servername === ''">
+              作成
+            </button>
+          </div>
+        </div>
+      </Dialog>
     </div>
     <!-- detail-sidebar -->
     <div class="w-full bg-slate-100" />

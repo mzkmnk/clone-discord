@@ -7,8 +7,11 @@ const login = async () => {
     options: {
       redirectTo: 'http://localhost:3000/confirm',
     },
-  })
+  });
 }
+
+
+
 </script>
 
 <template>

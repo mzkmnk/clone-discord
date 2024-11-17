@@ -2,10 +2,21 @@
 
 const user = useSupabaseUser();
 
-watchEffect(() => {
-  console.dir(user.value,{depth:null});
-  navigateTo('/dashboard')
+const { $client } = useNuxtApp();
+
+onMounted(async () => {
+  if(user.value){
+    await $client.user.create.useMutation().mutate({
+      id:user.value.id,
+      fullName:user.value?.user_metadata['full_name'],
+      name:user.value?.user_metadata['name'],
+      email:user.value?.user_metadata['email'],
+    })
+  }
+  await navigateTo('/dashboard')
 })
+
+
 </script>
 
 <template>

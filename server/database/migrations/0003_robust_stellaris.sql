@@ -1,0 +1,1 @@
+ALTER TABLE "groups_table" ADD COLUMN "icon_url" varchar(512);

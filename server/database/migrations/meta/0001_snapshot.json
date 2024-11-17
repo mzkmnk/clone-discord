@@ -1,9 +1,76 @@
 {
-  "id": "664c35dd-fab6-4275-a147-1ee46eff4c51",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "30d57b10-8624-4a18-a93a-063ffb9a20d0",
+  "prevId": "664c35dd-fab6-4275-a147-1ee46eff4c51",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.dm_members_table": {
+      "name": "dm_members_table",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dm_id": {
+          "name": "dm_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dm_members_table_user_id_users_table_id_fk": {
+          "name": "dm_members_table_user_id_users_table_id_fk",
+          "tableFrom": "dm_members_table",
+          "tableTo": "users_table",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "dm_members_table_dm_id_dms_table_id_fk": {
+          "name": "dm_members_table_dm_id_dms_table_id_fk",
+          "tableFrom": "dm_members_table",
+          "tableTo": "dms_table",
+          "columnsFrom": [
+            "dm_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "dm_members_table_user_id_dm_id_pk": {
+          "name": "dm_members_table_user_id_dm_id_pk",
+          "columns": [
+            "user_id",
+            "dm_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.dms_table": {
       "name": "dms_table",
       "schema": "",

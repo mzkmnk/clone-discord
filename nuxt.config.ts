@@ -7,6 +7,9 @@ config({path:'.env.local'})
 export default defineNuxtConfig({
 
   modules: ['@nuxt/icon', '@nuxtjs/supabase', '@nuxt/eslint','@pinia/nuxt'],
+  build: {
+    transpile: ['trpc-nuxt']
+  },
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2024-04-03',
