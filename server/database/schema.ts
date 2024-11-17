@@ -35,9 +35,9 @@ export const groupMembersTable = pgTable('group_members_table', {
     groupId:uuid('group_id').notNull().references(() => groupsTable.id),
     joinedAt:timestamp('created_at').notNull().defaultNow(),
     role:varchar('role',{length:256}).notNull(),
-},(groupMembers) => ({
-    pk:primaryKey({columns:[groupMembers.groupId,groupMembers.userId]}),
-}));
+},(groupMembers) =>
+    [primaryKey({columns:[groupMembers.groupId,groupMembers.userId]})],
+);
 
 /** ユーザとdmを結ぶ関係テーブル */
 export const dmMembersTable = pgTable('dm_members_table', {

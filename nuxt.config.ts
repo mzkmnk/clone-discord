@@ -6,7 +6,12 @@ config({path:'.env.local'})
 
 export default defineNuxtConfig({
 
-  modules: ['@nuxt/icon', '@nuxtjs/supabase', '@nuxt/eslint','@pinia/nuxt'],
+  modules: [
+    '@nuxt/icon',
+    '@nuxtjs/supabase',
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+  ],
   build: {
     transpile: ['trpc-nuxt']
   },

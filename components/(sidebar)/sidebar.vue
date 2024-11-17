@@ -37,7 +37,7 @@ const clickNextButton = async () => {
     description:'test description',
   });
 
-  const data = await $client.group.insertUser.useMutation().mutate({
+  await $client.group.insertUser.useMutation().mutate({
     userId:user.id,
     groupId,
     role:'admin',

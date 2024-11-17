@@ -5,5 +5,5 @@ import { drizzle } from 'drizzle-orm/postgres-js';
 
 config({path:'.env.local'})
 
-const client = postgres(process.env.DATABASE_URL!);
+const client = postgres(process.env.NUXT_POSTGRES_URL!);
 export const db = drizzle({ client });
