@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1731818112652,
-      "tag": "0000_loose_stardust",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1731818285951,
-      "tag": "0001_lumpy_invaders",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1731818550853,
-      "tag": "0002_long_peter_parker",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1731819235310,
-      "tag": "0003_robust_stellaris",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1731819277848,
-      "tag": "0004_lumpy_franklin_storm",
+      "when": 1731847990934,
+      "tag": "0000_mushy_union_jack",
       "breakpoints": true
     }
   ]
