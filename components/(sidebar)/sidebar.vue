@@ -31,17 +31,35 @@ const clickBackButton = () => dialogProps.value.isOpen = false;
 const clickNextButton = async () => {
   dialogProps.value.loading = true;
   const groupId:string = createUUID();
-  await $client.group.create.useMutation().mutate({
-    id:groupId,
-    name:dialogProps.value.servername,
-    description:'test description',
+
+  await $fetch('/api/group/create',{
+    method:'POST',
+    body:{
+      id:groupId,
+      name:dialogProps.value.servername,
+      description:'test description',
+    }
   });
 
-  await $client.group.insertUser.useMutation().mutate({
-    userId:user.id,
-    groupId,
-    role:'admin',
-  })
+  await $fetch('/api/group/insert-user',{
+    method:'POST',
+    body:{
+      userId:user.id,
+      groupId:groupId,
+      role:'admin',
+    }
+  });
+
+  // await $client.group.create.useMutation().mutate({
+  //   id:groupId,
+  //   name:dialogProps.value.servername,
+  //   description:'test description',
+  // });
+  // await $client.group.insertUser.useMutation().mutate({
+  //   userId:user.id,
+  //   groupId,
+  //   role:'admin',
+  // })
 
   dialogProps.value = {
     isOpen:false,

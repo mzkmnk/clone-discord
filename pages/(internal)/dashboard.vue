@@ -8,8 +8,16 @@ const { $client } = useNuxtApp();
 
 const { user } = useUserStore();
 
-const data = await useFetch('/api/group/group');
-console.log('data',data.data.value);
+console.log(user.id);
+
+onMounted(async() => {
+  const data = await $fetch('/api/group/get-all',{
+    method:'POST',
+    body: {
+      userId: user.id,
+    }
+  });
+});
 
 </script>
 

@@ -16,7 +16,7 @@ export namespace GroupQuery {
             id,
             name,
             description,
-        });
+        }).returning();
     };
 
     /** グループにユーザを追加する */
