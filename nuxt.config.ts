@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxt/eslint',
     '@pinia/nuxt',
+    '@nuxt/image',
   ],
   build: {
     transpile: ['trpc-nuxt']

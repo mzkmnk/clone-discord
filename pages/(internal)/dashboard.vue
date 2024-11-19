@@ -4,14 +4,10 @@ import Sidebar from '~/components/(sidebar)/sidebar.vue'
 import {useUserStore} from "~/composables/store/user.store";
 import {$fetch} from "ofetch";
 
-const { $client } = useNuxtApp();
-
 const { user } = useUserStore();
 
-console.log(user.id);
-
 onMounted(async() => {
-  const data = await $fetch('/api/group/get-all',{
+  await $fetch('/api/group/get-all',{
     method:'POST',
     body: {
       userId: user.id,

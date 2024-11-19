@@ -5,8 +5,6 @@ import SidebarItem from '~/components/(sidebar)/sidebar-item.vue';
 import Dialog from "~/components/(dialog)/dialog.vue";
 import {useUserStore} from "~/composables/store/user.store";
 
-const { $client } = useNuxtApp();
-
 const { user } = useUserStore();
 
 /** ダイアログのprops */
@@ -50,22 +48,17 @@ const clickNextButton = async () => {
     }
   });
 
-  // await $client.group.create.useMutation().mutate({
-  //   id:groupId,
-  //   name:dialogProps.value.servername,
-  //   description:'test description',
-  // });
-  // await $client.group.insertUser.useMutation().mutate({
-  //   userId:user.id,
-  //   groupId,
-  //   role:'admin',
-  // })
-
   dialogProps.value = {
     isOpen:false,
     loading:false,
     servername:'',
   }
+};
+
+/** サーバーの画像を取得する */
+// todo 型定義
+const uploadImage = async (e:any) => {
+  console.log(e.target?.files);
 };
 
 </script>
@@ -79,6 +72,9 @@ const clickNextButton = async () => {
           name="ic:baseline-discord"
           size="30"
         />
+      </SidebarItem>
+      <SidebarItem>
+        <nuxt-img class="w-auto rounded-full" src="assets/sumples/angular.png"></nuxt-img>
       </SidebarItem>
       <SidebarItem :is-selected=true>
         <Icon
@@ -120,6 +116,13 @@ const clickNextButton = async () => {
       <Dialog :is-open="dialogProps.isOpen">
         <div class="px-10 py-7 w-full min-h-full rounded-xl bg-white flex flex-col gap-3">
           <h3 class="text-2xl font-semibold text-gray-700">サーバーを作成</h3>
+
+          <div class="flex flex-col gap-2 items-center justify-center">
+            <label class="flex cursor-pointer appearance-none items-center justify-center border-2 border-dashed rounded-full border-gray-200 p-6 transition-all">
+              <Icon name="marketeq:upload-alt-4" size="25"></Icon>
+              <input type="file" id="file" class="sr-only" @change="uploadImage($event)" />
+            </label>
+          </div>
           <div class="flex flex-col gap-2 items-start">
             <p class="font-semibold text-gray-600">サーバー名</p>
             <input v-model="dialogProps.servername" autofocus class="font-semibold text-gray-800 border w-full rounded-xl h-12 px-2 block focus:outline-none focus:border-indigo-600 focus:ring-indigo-600 focus:ring-1" placeholder="example:nextjs server">

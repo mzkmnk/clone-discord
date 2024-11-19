@@ -10,7 +10,7 @@ const props = defineProps<{ className?: string,isSelected?:boolean,click?:() => 
       'group-hover:before:h-3/6':!isSelected,
       'before:h-5/6':isSelected,
     })" />
-    <div :class="cn('cursor-pointer flex items-center justify-center rounded-full p-3 h-16 w-16', 'group-hover:rounded-2xl', props.className)">
+    <div :class="cn('cursor-pointer flex items-center justify-center rounded-full p-2 h-16 w-16', 'group-hover:rounded-2xl', props.className)">
       <slot />
     </div>
   </div>

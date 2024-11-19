@@ -2,8 +2,6 @@
 
 const user = useSupabaseUser();
 
-const { $client } = useNuxtApp();
-
 onMounted(async () => {
   if(user.value){
     await $fetch('/api/user/create', {
