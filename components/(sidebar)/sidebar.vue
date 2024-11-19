@@ -12,10 +12,12 @@ const dialogProps = ref<{
   isOpen: boolean;
   loading:boolean,
   servername:string,
+  imageFile:File[],
 }>({
   isOpen: false,
   loading:false,
   servername:'',
+  imageFile:[],
 })
 
 const clickAddGroup = ():void => {
@@ -28,37 +30,51 @@ const clickBackButton = () => dialogProps.value.isOpen = false;
 /** ダイアログの進むボタン関数 */
 const clickNextButton = async () => {
   dialogProps.value.loading = true;
-  const groupId:string = createUUID();
 
-  await $fetch('/api/group/create',{
-    method:'POST',
-    body:{
-      id:groupId,
-      name:dialogProps.value.servername,
-      description:'test description',
-    }
-  });
+  // 画像をアップロードする
+  const formData = new FormData();
+  formData.append('file',dialogProps.value.imageFile[0]);
+  await $fetch('/api/image/upload',{
+    method:'post',
+    body:formData,
+  })
 
-  await $fetch('/api/group/insert-user',{
-    method:'POST',
-    body:{
-      userId:user.id,
-      groupId:groupId,
-      role:'admin',
-    }
-  });
+  // todo image upload完了次第コメントアウト外す
+  // const groupId:string = createUUID();
+  // await $fetch('/api/group/create',{
+  //   method:'POST',
+  //   body:{
+  //     id:groupId,
+  //     name:dialogProps.value.servername,
+  //     description:'test description',
+  //   }
+  // });
+  //
+  // await $fetch('/api/group/insert-user',{
+  //   method:'POST',
+  //   body:{
+  //     userId:user.id,
+  //     groupId:groupId,
+  //     role:'admin',
+  //   }
+  // });
 
+  /** 初期値に戻す */
   dialogProps.value = {
     isOpen:false,
     loading:false,
     servername:'',
+    imageFile:[],
   }
 };
 
 /** サーバーの画像を取得する */
 // todo 型定義
 const uploadImage = async (e:any) => {
-  console.log(e.target?.files);
+  if(!e.target){
+    return
+  }
+  dialogProps.value.imageFile = e.target.files;
 };
 
 </script>
