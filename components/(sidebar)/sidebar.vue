@@ -31,16 +31,18 @@ const clickBackButton = () => dialogProps.value.isOpen = false;
 const clickNextButton = async () => {
   dialogProps.value.loading = true;
 
+  const groupId:string = createUUID();
+  const imageId:string = createUUID();
+
   // 画像をアップロードする
   const formData = new FormData();
-  formData.append('file',dialogProps.value.imageFile[0]);
+  formData.append(imageId,dialogProps.value.imageFile[0]);
   await $fetch('/api/image/upload',{
     method:'post',
     body:formData,
   })
 
   // todo image upload完了次第コメントアウト外す
-  // const groupId:string = createUUID();
   // await $fetch('/api/group/create',{
   //   method:'POST',
   //   body:{
