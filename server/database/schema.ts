@@ -1,7 +1,4 @@
 import {pgTable, primaryKey, text, timestamp, uuid, varchar} from "drizzle-orm/pg-core";
-import Interceptors from "undici-types/interceptors";
-import {InferInsertModel, InferModel, InferSelectModel} from "drizzle-orm";
-import type from "@redocly/ajv/lib/vocabularies/jtd/type";
 
 /** ユーザテーブル */
 export const usersTable = pgTable('users_table', {
@@ -19,6 +16,7 @@ export const groupsTable = pgTable('groups_table', {
     id: uuid('id').primaryKey(),
     name: varchar('name',{length:256}).notNull(),
     description: text('description'),
+    bucket:text('bucket'),
     iconUrl:varchar('icon_url',{length:512}),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 })

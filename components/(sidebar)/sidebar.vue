@@ -7,6 +7,8 @@ import {useUserStore} from "~/composables/store/user.store";
 
 const { user } = useUserStore();
 
+const { storage } = useSupabaseClient();
+
 /** ダイアログのprops */
 const dialogProps = ref<{
   isOpen: boolean;
@@ -19,6 +21,11 @@ const dialogProps = ref<{
   servername:'',
   imageFile:[],
 })
+
+// onMounted(async () => {
+//   const { data } = await storage.from('icons/server').download('cd436a8c-e530-4e61-b23f-0402d0ddb7f3.png');
+//   src.value = URL.createObjectURL(data!);
+// });
 
 const clickAddGroup = ():void => {
   dialogProps.value.isOpen = true;
@@ -34,32 +41,40 @@ const clickNextButton = async () => {
   const groupId:string = createUUID();
   const imageId:string = createUUID();
 
+  // 画像fileを取得する
+  const file = dialogProps.value.imageFile[0];
+
+  // 拡張子を取得する
+  const fileExt = file.name.split('.').pop();
+
+  // 画像のpath
+  const filePath = `${imageId}.${fileExt}`;
+
   // 画像をアップロードする
-  const formData = new FormData();
-  formData.append(imageId,dialogProps.value.imageFile[0]);
-  await $fetch('/api/image/upload',{
-    method:'post',
-    body:formData,
-  })
+  const { data } = await storage.from('icons/server').upload(filePath,file);
+
+  console.log(data);
 
   // todo image upload完了次第コメントアウト外す
-  // await $fetch('/api/group/create',{
-  //   method:'POST',
-  //   body:{
-  //     id:groupId,
-  //     name:dialogProps.value.servername,
-  //     description:'test description',
-  //   }
-  // });
-  //
-  // await $fetch('/api/group/insert-user',{
-  //   method:'POST',
-  //   body:{
-  //     userId:user.id,
-  //     groupId:groupId,
-  //     role:'admin',
-  //   }
-  // });
+  await $fetch('/api/group/create',{
+    method:'post',
+    body:{
+      id:groupId,
+      name:dialogProps.value.servername,
+      description:'test description',
+      bucket:'icons/server',
+      iconUrl:data?.path,
+    }
+  });
+
+  await $fetch('/api/group/insert-user',{
+    method:'post',
+    body:{
+      userId:user.id,
+      groupId:groupId,
+      role:'admin',
+    }
+  });
 
   /** 初期値に戻す */
   dialogProps.value = {
