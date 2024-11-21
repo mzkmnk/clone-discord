@@ -9,6 +9,8 @@ const { user } = useUserStore();
 
 const { storage } = useSupabaseClient();
 
+const groups = ref<{id: string,name: string,iconUrl:string}[]>([]);
+
 /** ダイアログのprops */
 const dialogProps = ref<{
   isOpen: boolean;
@@ -22,17 +24,51 @@ const dialogProps = ref<{
   imageFile:[],
 })
 
-// onMounted(async () => {
-//   const { data } = await storage.from('icons/server').download('cd436a8c-e530-4e61-b23f-0402d0ddb7f3.png');
-//   src.value = URL.createObjectURL(data!);
-// });
+
+onMounted(async() => {
+  /** グループ情報を取得する */
+  const { data } = await $fetch('/api/group/get-all',{
+    method:'POST',
+    body: {
+      userId: user.id,
+    }
+  });
+
+  /**
+   * グループ情報からid,name,iconUrlを取得する
+   * note
+   * api側で画像のurlを取得したかったが、storageがcomposableなのでこっちで取得。
+   */
+  await Promise.all(
+      data.map(async (group):Promise<void> => {
+        if(group.bucket && group.iconUrl){
+          const { data,error }= await storage.from(group.bucket).download(group.iconUrl);
+          if(error)throw error;
+          groups.value.push({
+            id: group.id,
+            name: group.name,
+            iconUrl: URL.createObjectURL(data)
+          })
+        }
+      }),
+  )
+});
 
 const clickAddGroup = ():void => {
   dialogProps.value.isOpen = true;
-};
+}
 
 /** ダイアログの戻るボタンの関数 */
 const clickBackButton = () => dialogProps.value.isOpen = false;
+
+/** サーバーの画像を取得する */
+// todo 型定義
+const uploadImage = async (e:any) => {
+  if(!e.target){
+    return
+  }
+  dialogProps.value.imageFile = e.target.files;
+};
 
 /** ダイアログの進むボタン関数 */
 const clickNextButton = async () => {
@@ -40,6 +76,8 @@ const clickNextButton = async () => {
 
   const groupId:string = createUUID();
   const imageId:string = createUUID();
+
+  const bucket:string = 'icons/server';
 
   // 画像fileを取得する
   const file = dialogProps.value.imageFile[0];
@@ -51,7 +89,7 @@ const clickNextButton = async () => {
   const filePath = `${imageId}.${fileExt}`;
 
   // 画像をアップロードする
-  const { data } = await storage.from('icons/server').upload(filePath,file);
+  const { data } = await storage.from(bucket).upload(filePath,file);
 
   // グループを作成する
   await $fetch('/api/group/create',{
@@ -60,7 +98,7 @@ const clickNextButton = async () => {
       id:groupId,
       name:dialogProps.value.servername,
       description:'test description',
-      bucket:'icons/server',
+      bucket,
       iconUrl:data?.path,
     }
   });
@@ -84,15 +122,6 @@ const clickNextButton = async () => {
   }
 };
 
-/** サーバーの画像を取得する */
-// todo 型定義
-const uploadImage = async (e:any) => {
-  if(!e.target){
-    return
-  }
-  dialogProps.value.imageFile = e.target.files;
-};
-
 </script>
 
 <template>
@@ -105,39 +134,17 @@ const uploadImage = async (e:any) => {
           size="30"
         />
       </SidebarItem>
-      <SidebarItem>
-        <nuxt-img class="w-auto rounded-full" src="assets/sumples/angular.png"></nuxt-img>
+
+      <!--dbから取得した情報を表示する-->
+      <SidebarItem v-for="group of groups" :key="group.id">
+        <nuxt-img
+            class="w-full h-full object-contain rounded-full"
+            :src="group.iconUrl"
+            alt="server icon"
+        >
+        </nuxt-img>
       </SidebarItem>
-      <SidebarItem :is-selected=true>
-        <Icon
-          name="logos:arc"
-          size="30"
-        />
-      </SidebarItem>
-      <SidebarItem>
-        <Icon
-          name="logos:aws"
-          size="30"
-        />
-      </SidebarItem>
-      <SidebarItem>
-        <Icon
-          name="logos:angular-icon"
-          size="30"
-        />
-      </SidebarItem>
-      <SidebarItem>
-        <Icon
-          name="logos:vue"
-          size="30"
-        />
-      </SidebarItem>
-      <SidebarItem>
-        <Icon
-          name="logos:nextjs-icon"
-          size="30"
-        />
-      </SidebarItem>
+
       <SidebarItem class-name="group-hover:bg-green-500" :click="clickAddGroup">
         <Icon
           :class="cn('text-green-500', 'group-hover:text-white')"
@@ -145,6 +152,8 @@ const uploadImage = async (e:any) => {
           size="30"
         />
       </SidebarItem>
+
+      <!--サーバ追加のダイアログ-->
       <Dialog :is-open="dialogProps.isOpen">
         <div class="px-10 py-7 w-full min-h-full rounded-xl bg-white flex flex-col gap-3">
           <h3 class="text-2xl font-semibold text-gray-700">サーバーを作成</h3>
