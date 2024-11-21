@@ -53,9 +53,7 @@ const clickNextButton = async () => {
   // 画像をアップロードする
   const { data } = await storage.from('icons/server').upload(filePath,file);
 
-  console.log(data);
-
-  // todo image upload完了次第コメントアウト外す
+  // グループを作成する
   await $fetch('/api/group/create',{
     method:'post',
     body:{
@@ -67,6 +65,7 @@ const clickNextButton = async () => {
     }
   });
 
+  // グループにユーザを追加する
   await $fetch('/api/group/insert-user',{
     method:'post',
     body:{

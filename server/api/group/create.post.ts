@@ -9,6 +9,7 @@ export default  defineEventHandler(async (event) => {
         name:body.name,
         description:body.description,
         bucket:body.bucket,
+        iconUrl:body.iconUrl,
     });
 
     return {

@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS "groups_table" (
 	"id" uuid PRIMARY KEY NOT NULL,
 	"name" varchar(256) NOT NULL,
 	"description" text,
+	"bucket" text,
 	"icon_url" varchar(512),
 	"created_at" timestamp DEFAULT now() NOT NULL
 );

@@ -1,5 +1,5 @@
 {
-  "id": "6afb15f6-d7af-4bfc-b95e-6eeb7120cb0f",
+  "id": "0d9a0e70-59f0-491b-a95b-5b01aa23a02d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -330,6 +330,12 @@
         },
         "description": {
           "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bucket": {
+          "name": "bucket",
           "type": "text",
           "primaryKey": false,
           "notNull": false

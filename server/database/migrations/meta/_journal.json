@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1731847990934,
-      "tag": "0000_mushy_union_jack",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1732109827373,
-      "tag": "0001_tiny_banshee",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1732110195565,
-      "tag": "0002_elite_wither",
+      "when": 1732145062000,
+      "tag": "0000_curved_skreet",
       "breakpoints": true
     }
   ]

@@ -4,8 +4,6 @@ import {GroupQuery} from "~/server/database/query/group.query";
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
 
-    console.log(body);
-
     const data = await GroupQuery.insertUser({userId:body.userId,groupId:body.groupId,role:body.role})
 
     return {
