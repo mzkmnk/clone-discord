@@ -1,126 +1,9 @@
 <script setup lang="ts">
 
-import {cn, createUUID} from '~/libs/utils'
 import SidebarItem from '~/components/(sidebar)/sidebar-item.vue';
 import Dialog from "~/components/(dialog)/dialog.vue";
-import {useUserStore} from "~/composables/store/user.store";
 
-const { user } = useUserStore();
-
-const { storage } = useSupabaseClient();
-
-const groups = ref<{id: string,name: string,iconUrl:string}[]>([]);
-
-/** ダイアログのprops */
-const dialogProps = ref<{
-  isOpen: boolean;
-  loading:boolean,
-  servername:string,
-  imageFile:File[],
-}>({
-  isOpen: false,
-  loading:false,
-  servername:'',
-  imageFile:[],
-})
-
-
-onMounted(async() => {
-  /** グループ情報を取得する */
-  const { data } = await $fetch('/api/group/get-all',{
-    method:'POST',
-    body: {
-      userId: user.id,
-    }
-  });
-
-  /**
-   * グループ情報からid,name,iconUrlを取得する
-   * note
-   * api側で画像のurlを取得したかったが、storageがcomposableなのでこっちで取得。
-   */
-  await Promise.all(
-      data.map(async (group):Promise<void> => {
-        if(group.bucket && group.iconUrl){
-          const { data,error }= await storage.from(group.bucket).download(group.iconUrl);
-          if(error)throw error;
-          groups.value.push({
-            id: group.id,
-            name: group.name,
-            iconUrl: URL.createObjectURL(data)
-          })
-        }
-      }),
-  )
-});
-
-const clickAddGroup = ():void => {
-  dialogProps.value.isOpen = true;
-}
-
-/** ダイアログの戻るボタンの関数 */
-const clickBackButton = () => dialogProps.value.isOpen = false;
-
-/** サーバーの画像を取得する */
-// todo 型定義
-const uploadImage = async (e:any) => {
-  if(!e.target){
-    return
-  }
-  dialogProps.value.imageFile = e.target.files;
-};
-
-/** ダイアログの進むボタン関数 */
-const clickNextButton = async () => {
-  dialogProps.value.loading = true;
-
-  const groupId:string = createUUID();
-  const imageId:string = createUUID();
-
-  const bucket:string = 'icons/server';
-
-  // 画像fileを取得する
-  const file = dialogProps.value.imageFile[0];
-
-  // 拡張子を取得する
-  const fileExt = file.name.split('.').pop();
-
-  // 画像のpath
-  const filePath = `${imageId}.${fileExt}`;
-
-  // 画像をアップロードする
-  const { data } = await storage.from(bucket).upload(filePath,file);
-
-  // グループを作成する
-  await $fetch('/api/group/create',{
-    method:'post',
-    body:{
-      id:groupId,
-      name:dialogProps.value.servername,
-      description:'test description',
-      bucket,
-      iconUrl:data?.path,
-    }
-  });
-
-  // グループにユーザを追加する
-  await $fetch('/api/group/insert-user',{
-    method:'post',
-    body:{
-      userId:user.id,
-      groupId:groupId,
-      role:'admin',
-    }
-  });
-
-  /** 初期値に戻す */
-  dialogProps.value = {
-    isOpen:false,
-    loading:false,
-    servername:'',
-    imageFile:[],
-  }
-};
+const { servers,isLoading,dialogProps,clickAddGroup,clickBackButton,uploadImage,clickNextButton } = useSidebar();
 
 </script>
 
@@ -136,7 +19,11 @@ const clickNextButton = async () => {
       </SidebarItem>
 
       <!--dbから取得した情報を表示する-->
-      <SidebarItem v-for="group of groups" :key="group.id">
+      <SidebarItem v-if="isLoading" v-for="i of [0,1,2]" :key="i">
+        <div class="w-full h-full rounded-full bg-gray-400 animate-pulse"></div>
+      </SidebarItem>
+
+      <SidebarItem v-else class-name="bg-white p-1" v-for="group of servers" :key="group.id">
         <nuxt-img
             class="w-full h-full object-contain rounded-full"
             :src="group.iconUrl"
@@ -145,7 +32,7 @@ const clickNextButton = async () => {
         </nuxt-img>
       </SidebarItem>
 
-      <SidebarItem class-name="group-hover:bg-green-500" :click="clickAddGroup">
+      <SidebarItem class-name="bg-white group-hover:bg-green-500" :click="clickAddGroup">
         <Icon
           :class="cn('text-green-500', 'group-hover:text-white')"
           name="ic:outline-plus"

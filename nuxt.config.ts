@@ -6,6 +6,13 @@ config({path:'.env.local'})
 
 export default defineNuxtConfig({
 
+  imports:{
+    dirs:[
+      // scan all files
+      'composables/**'
+    ]
+  },
+
   modules: [
     '@nuxt/icon',
     '@nuxtjs/supabase',
