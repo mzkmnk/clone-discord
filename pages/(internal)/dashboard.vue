@@ -26,7 +26,9 @@ const onClickSubmit = async ():Promise<void> => {
       groupId:groupId,
       content:content.value,
     }
-  })
+  });
+
+  content.value = '';
 }
 
 </script>

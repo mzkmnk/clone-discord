@@ -36,12 +36,12 @@ const chatsChannel = supabase
         async (payload:any) => { // todo 型づけどうしよう
           const chatResponse : TGroupMessagesTable = payload.new;
 
-          const { data } = await $fetch<{data:TUserTable}>(`/api/user/${chatResponse.userId}`);
+          const { user } = await $fetch<{user:TUserTable}>(`/api/user/${chatResponse.userId}`);
 
           chats.value.push({
             user:{
               id:chatResponse.userId,
-              username:data.name,
+              username:user.name,
             },
             id:chatResponse.id,
             content:chatResponse.content,
@@ -53,17 +53,23 @@ const chatsChannel = supabase
 onMounted(async () => {
   const { serverChats } = await $fetch<{serverChats:TGroupMessagesTable[]}>(`api/chat/${props.groupId}`);
 
-  serverChats.forEach((chat) => {
-    chats.value.push({
-      user:{
-        id:'',
-        username:'',
-      },
-      id:chat.id,
-      content:chat.content,
-      createdAt:chat.createdAt,
-    });
-  });
+  await Promise.all(
+    serverChats.map(async (chat) => {
+
+      /** ユーザデータを取得する*/
+      const { user } = await $fetch<{user:TUserTable}>(`/api/user/${chat.userId}`);
+
+      chats.value.push({
+        user:{
+          id:chat.userId,
+          username:user.name
+        },
+        id:chat.id,
+        content:chat.content,
+        createdAt:chat.createdAt,
+      });
+    })
+ )
 
   chatsChannel.subscribe();
 });
@@ -85,7 +91,7 @@ onMounted(async () => {
   <div class="container">
       <div class="flex flex-col gap-1 py-2">
         <div v-for="chat of chats" class="flex items-center gap-4 hover:bg-gray-100 p-2">
-          <div class="rounded-full bg-red-500 w-16 h-16 flex items-center justify-center">
+          <div class="flex-shrink-0 rounded-full bg-red-500 w-16 h-16 flex items-center justify-center">
             <Icon
                 class="bg-white"
                 name="ic:baseline-discord"
