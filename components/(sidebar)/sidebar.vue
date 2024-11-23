@@ -1,9 +1,54 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import SidebarItem from '~/components/(sidebar)/sidebar-item.vue';
 import Dialog from "~/components/(dialog)/dialog.vue";
 
-const { servers,isLoading,dialogProps,clickAddGroup,clickBackButton,uploadImage,clickNextButton } = useSidebar();
+const serversStore = useServersStore();
+
+/** ダイアログのprops */
+const dialogProps = ref<{
+  isOpen: boolean;
+  loading:boolean,
+  servername:string,
+  imageFile:File[],
+}>({
+  isOpen: false,
+  loading:false,
+  servername:'',
+  imageFile:[],
+})
+
+/** ダイアログを表示する */
+const clickAddGroup = ():void => {
+  dialogProps.value.isOpen = true;
+}
+
+/** ダイアログの戻るボタンの関数 */
+const clickBackButton = ():boolean => dialogProps.value.isOpen = false;
+
+/** サーバーの画像を取得する */
+    // todo 型定義
+const uploadImage = async (e:any):Promise<void> => {
+  if(!e.target){
+    return
+  }
+  dialogProps.value.imageFile = e.target.files;
+};
+
+/** ダイアログの進むボタン関数 */
+const clickNextButton = async ():Promise<void> => {
+  dialogProps.value.loading = true;
+  
+  await serversStore.createServer({file:dialogProps.value.imageFile[0],servername:dialogProps.value.servername})
+
+  /** 初期値に戻す */
+  dialogProps.value = {
+    isOpen:false,
+    loading:false,
+    servername:'',
+    imageFile:[],
+  }
+}
 
 </script>
 
@@ -19,20 +64,20 @@ const { servers,isLoading,dialogProps,clickAddGroup,clickBackButton,uploadImage,
       </SidebarItem>
 
       <!--dbから取得した情報を表示する-->
-      <SidebarItem v-if="isLoading" v-for="i of [0,1,2]" :key="i">
+      <SidebarItem v-for="i of [0,1,2]" v-if="serversStore.isLoadingServerInfo" :key="i">
         <div class="w-full h-full rounded-full bg-gray-400 animate-pulse"></div>
       </SidebarItem>
 
-      <SidebarItem v-else class-name="bg-white p-1" v-for="group of servers" :key="group.id">
+      <SidebarItem v-for="server of serversStore.servers" v-else :key="server.id" class-name="bg-white p-1">
         <nuxt-img
-            class="w-full h-full object-contain rounded-full"
-            :src="group.iconUrl"
+            :src="server.iconUrl"
             alt="server icon"
+            class="w-full h-full object-contain rounded-full"
         >
         </nuxt-img>
       </SidebarItem>
 
-      <SidebarItem class-name="bg-white group-hover:bg-green-500" :click="clickAddGroup">
+      <SidebarItem :click="clickAddGroup" class-name="bg-white group-hover:bg-green-500">
         <Icon
           :class="cn('text-green-500', 'group-hover:text-white')"
           name="ic:outline-plus"
@@ -48,7 +93,7 @@ const { servers,isLoading,dialogProps,clickAddGroup,clickBackButton,uploadImage,
           <div class="flex flex-col gap-2 items-center justify-center">
             <label class="flex cursor-pointer appearance-none items-center justify-center border-2 border-dashed rounded-full border-gray-200 p-6 transition-all">
               <Icon name="marketeq:upload-alt-4" size="25"></Icon>
-              <input type="file" id="file" class="sr-only" @change="uploadImage($event)" />
+              <input id="file" class="sr-only" type="file" @change="uploadImage($event)" />
             </label>
           </div>
           <div class="flex flex-col gap-2 items-start">
@@ -61,7 +106,7 @@ const { servers,isLoading,dialogProps,clickAddGroup,clickBackButton,uploadImage,
             </button>
             <button :class="cn('rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white p-2 min-w-20',{
               'bg-indigo-500':dialogProps.loading || dialogProps.servername === '',
-            })" @click="clickNextButton" :disabled="dialogProps.loading || dialogProps.servername === ''">
+            })" :disabled="dialogProps.loading || dialogProps.servername === ''" @click="clickNextButton">
               作成
             </button>
           </div>

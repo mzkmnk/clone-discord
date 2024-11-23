@@ -1,5 +1,7 @@
 import {db} from "~/server/database";
 
+export type TServerResponse = {id: string,name: string,iconUrl: string | null ,createdAt: Date, description: string | null,bucket: string | null};
+
 /** ユーザが所属しているグループを取得する */
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -15,7 +17,7 @@ export default defineEventHandler(async (event) => {
         }
     })
 
-    const groups: {id: string,name: string,iconUrl: string | null ,createdAt: Date, description: string | null,bucket: string | null}[] = [];
+    const groups: TServerResponse[] = [];
 
     // グループIDから各グループの情報を取得する。
     await Promise.all(

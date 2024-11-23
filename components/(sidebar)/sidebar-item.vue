@@ -5,6 +5,7 @@ const props = defineProps<{
   isSelected?:boolean,
   click?:() => void|Promise<void>,
 }>()
+
 </script>
 
 <template>

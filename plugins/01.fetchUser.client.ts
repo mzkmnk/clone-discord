@@ -1,6 +1,6 @@
 import {useUserStore} from "~/composables/store/user.store";
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
     const user = useSupabaseUser();
 
     if(user.value){
@@ -9,6 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             id:user.value.id,
             name:user.value.user_metadata['name'],
             fullName:user.value.user_metadata['full_name'],
-        })
+        });
     }
 });

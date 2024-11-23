@@ -1,6 +1,15 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 
 import Sidebar from '~/components/(sidebar)/sidebar.vue'
+import {useServersStore} from "~/composables/store/servers.store";
+
+const serversStore = useServersStore();
+
+onMounted(async () => {
+  serversStore.setIsLoadingServerInfo({loading:true});
+  await serversStore.getServers();
+  serversStore. setIsLoadingServerInfo({loading:false});
+});
 
 </script>
 
