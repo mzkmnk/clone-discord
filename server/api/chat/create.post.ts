@@ -6,8 +6,6 @@ export default defineEventHandler(async (event) => {
 
   const body= await readBody(event);
 
-  console.log(body);
-
   const uuid = createUUID();
 
   await db.insert(groupMessagesTable).values({

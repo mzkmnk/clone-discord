@@ -1,11 +1,11 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 const { auth } = useSupabaseClient()
 
 const login = async () => {
   await auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: 'http://localhost:3000/confirm',
+      redirectTo: `${window.location.origin}/confirm`,
     },
   });
 }
