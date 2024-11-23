@@ -3,11 +3,11 @@
 const { auth } = useSupabaseClient()
 
 const login = async () => {
-  console.log(process.env.REDIRECT_URL_ORIGIN);
+  console.log(window.location.origin);
   await auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${process.env.REDIRECT_URL_ORIGIN ?? 'http://localhost:3000'}/confirm`,
+      redirectTo: `${window.location.origin}/confirm`,
     },
   });
 }
