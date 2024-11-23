@@ -8,6 +8,13 @@
       "when": 1732145062000,
       "tag": "0000_curved_skreet",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1732371507706,
+      "tag": "0001_minor_invaders",
+      "breakpoints": true
     }
   ]
 }

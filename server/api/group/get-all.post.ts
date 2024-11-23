@@ -23,8 +23,8 @@ export default defineEventHandler(async (event) => {
     await Promise.all(
         groupIdList.map(async (val) => {
             const group = await db.query.groupsTable.findFirst({
-                where(fields, operators) {
-                    return operators.eq(fields.id,val.groupId)
+                where(fields, {eq}) {
+                    return eq(fields.id,val.groupId)
                 },
             })
             if(group){

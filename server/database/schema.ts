@@ -50,9 +50,9 @@ export const dmMembersTable = pgTable('dm_members_table', {
 export const groupMessagesTable = pgTable('group_messages_table', {
     id:uuid('id').primaryKey(),
     userId:uuid('userId').notNull().references(() => usersTable.id),
-    groupId:uuid('group_id').notNull().references(() => groupsTable.id),
+    groupId:uuid('groupId').notNull().references(() => groupsTable.id),
     content:text('content').notNull(),
-    createdAt:timestamp('created_at').notNull().defaultNow(),
+    createdAt:timestamp('createdAt').notNull().defaultNow(),
 })
 
 /** dmのメッセージテーブル */
