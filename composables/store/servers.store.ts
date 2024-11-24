@@ -72,6 +72,9 @@ export const useServersStore = defineStore('sidebar',() => {
     };
 
     const setSelectedServer = ({serverId}:{serverId?:string}):void => {
+        if(servers.value.length === 0){
+            return
+        }
         if(serverId === undefined){
             selectedServer.value = servers.value[0].id
             return
