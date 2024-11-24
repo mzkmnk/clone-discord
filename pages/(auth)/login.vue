@@ -1,18 +1,28 @@
 <script lang="ts" setup>
 
-const { auth } = useSupabaseClient()
+const supabase = useSupabaseClient();
 
 const login = async () => {
   console.log(window.location.origin);
-  await auth.signInWithOAuth({
+  const {data,error}= await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: 'https://clone-discord-git-feature-internal-dashboard-mzkmnks-projects.vercel.app/confirm',
-    },
+    options:{
+      redirectTo:window.location.origin + '/confirm',
+    }
   });
+
+  if(error) throw error;
 }
 
+const user = useSupabaseUser();
 
+const session = useSupabaseSession()
+
+onMounted(async() => {
+  console.log('user',user.value);
+  console.log('session',session.value);
+  console.log(await supabase.auth.getSession());
+});
 
 </script>
 

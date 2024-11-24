@@ -14,14 +14,6 @@ export type TChat = {
   createdAt:Date,
 };
 
-export type TChatResponse = {
-  content:string,
-  createdAt:string,
-  id:string,
-  groupId:string,
-  userId:string
-};
-
 const props = defineProps<{groupId:string}>();
 
 const supabase = useSupabaseClient();
