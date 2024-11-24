@@ -107,6 +107,7 @@ watch(()=>chats,() => {
 
 watch(() => props.groupId, async () => {
   chats.value = [];
+  await fetchGetServers();
 })
 
 </script>
