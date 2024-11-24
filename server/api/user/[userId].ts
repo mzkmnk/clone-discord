@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
   })
 
   if(user === undefined){
+    setResponseStatus(event,404);
     return {
       status:404,
     }
