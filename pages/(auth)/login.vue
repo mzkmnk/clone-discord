@@ -7,7 +7,7 @@ const login = async () => {
   await auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/confirm`,
+      redirectTo: 'https://clone-discord-git-feature-internal-dashboard-mzkmnks-projects.vercel.app/confirm',
     },
   });
 }
