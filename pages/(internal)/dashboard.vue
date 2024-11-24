@@ -30,10 +30,6 @@ const onClickSubmit = async ():Promise<void> => {
   content.value = '';
 }
 
-watch(() => serversStore.selectedServer,(val) => {
-  console.log(val);
-});
-
 </script>
 
 <template>
