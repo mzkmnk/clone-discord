@@ -12,8 +12,6 @@ const content = ref<string>('');
 
 const groupId = '83748e60-ef6e-4fe2-a016-126f494a839f' // todo
 
-const session = useSupabaseSession();
-
 onMounted(async () => {
   serversStore.setIsLoadingServerInfo({loading:true});
   await serversStore.getServers();

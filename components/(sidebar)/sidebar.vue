@@ -5,12 +5,6 @@ import Dialog from "~/components/(dialog)/dialog.vue";
 
 const serversStore = useServersStore();
 
-const user = useSupabaseUser();
-
-onMounted(() => {
-  console.dir(user.value,{depth:null});
-});
-
 /** ダイアログのprops */
 const dialogProps = ref<{
   isOpen: boolean;

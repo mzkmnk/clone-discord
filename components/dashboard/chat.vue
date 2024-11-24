@@ -20,6 +20,10 @@ const supabase = useSupabaseClient();
 
 const chats = ref<TChat[]>([]);
 
+const isLoadingChat = ref<boolean>(true);
+
+const scrollContainerRef = ref<HTMLDivElement>();
+
 const chatsChannel = supabase
     .channel('chat')
     .on(
@@ -39,6 +43,8 @@ const chatsChannel = supabase
             content:chatResponse.content,
             createdAt:chatResponse.createdAt,
           });
+
+          chats.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         }
     );
 
@@ -61,28 +67,46 @@ onMounted(async () => {
         createdAt:chat.createdAt,
       });
     })
- )
+ );
+
+  chats.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
   chatsChannel.subscribe();
+
+  isLoadingChat.value = false;
 });
 
-// todo あとで使う
 /** 最下部に自動でスクロールする */
-// const scrollToBottom = ():void => {
-//   const chatsRef = useTemplateRef('chats');
-//
-//   console.log(chatsRef.value?.scrollHeight);
-//   if (chatsRef.value) {
-//     chatsRef.value.scrollTop = chatsRef.value.scrollHeight;
-//   }
-// };
+const scrollToBottom = ():void => {
+  if(scrollContainerRef.value){
+    scrollContainerRef.value.scrollTop = scrollContainerRef.value.scrollHeight;
+  }
+};
+
+onMounted(() => {
+  scrollToBottom();
+});
+
+watch(chats,() => {
+  scrollToBottom();
+});
 
 </script>
 
 <template>
-  <div class="container">
+  <div ref="scrollContainerRef" class="container">
       <div class="flex flex-col gap-1 py-2">
-        <div v-for="chat of chats" class="flex items-center gap-4 hover:bg-gray-100 p-2">
+        <div v-if="isLoadingChat" class="flex flex-col gap-2">
+          <div v-for="i of Array(20).fill(0)" :key="i" class="flex items-center gap-2 p-2">
+            <div class="min-h-16 min-w-16 bg-gray-200 animate-pulse rounded-full"></div>
+            <div class="flex flex-col gap-2 w-full">
+              <div class="min-h-5 w-full bg-gray-200 animate-pulse rounded-lg"></div>
+              <div class="min-h-5 w-96 bg-gray-200 animate-pulse rounded-lg"></div>
+              <div class="min-h-5 w-[500px] bg-gray-200 animate-pulse rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+        <div v-for="chat of chats" v-else class="flex items-center gap-4 hover:bg-gray-100 p-2">
           <div class="flex-shrink-0 rounded-full bg-red-500 w-16 h-16 flex items-center justify-center">
             <Icon
                 class="bg-white"

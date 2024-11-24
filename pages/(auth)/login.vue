@@ -3,8 +3,7 @@
 const supabase = useSupabaseClient();
 
 const login = async () => {
-  console.log(window.location.origin);
-  const {data,error}= await supabase.auth.signInWithOAuth({
+  const {error}= await supabase.auth.signInWithOAuth({
     provider: 'google',
     options:{
       redirectTo:window.location.origin + '/confirm',
@@ -13,16 +12,6 @@ const login = async () => {
 
   if(error) throw error;
 }
-
-const user = useSupabaseUser();
-
-const session = useSupabaseSession()
-
-onMounted(async() => {
-  console.log('user',user.value);
-  console.log('session',session.value);
-  console.log(await supabase.auth.getSession());
-});
 
 </script>
 
