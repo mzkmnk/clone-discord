@@ -64,12 +64,13 @@ const clickNextButton = async ():Promise<void> => {
           />
         </SidebarItem>
 
-        <!--dbから取得した情報を表示する-->
+
         <SidebarItem v-for="i of [0,1,2]" v-if="serversStore.isLoadingServerInfo" :key="i">
           <div class="w-full h-full rounded-full bg-gray-400 animate-pulse"></div>
         </SidebarItem>
 
-        <SidebarItem v-for="server of serversStore.servers" v-else :key="server.id" class-name="bg-white p-1">
+        <!--dbから取得した情報を表示する-->
+        <SidebarItem v-for="server of serversStore.servers" v-else :key="server.id" :click="() => {serversStore.setSelectedServer({serverId:server.id})}" :is-selected="server.id === serversStore.selectedServer" class-name="bg-white p-1">
           <nuxt-img
               :src="server.iconUrl"
               alt="server icon"

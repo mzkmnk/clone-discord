@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import type {TServerResponse} from "~/server/api/group/get-all.post";
 
-export type TServer = {id: string,name: string,iconUrl:string};
+export type TServer = {id: string,name: string,iconUrl:string,createdAt:Date};
 
 /** ユーザが所属しているサーバの情報を管理する */
 export const useServersStore = defineStore('sidebar',() => {
@@ -17,6 +17,9 @@ export const useServersStore = defineStore('sidebar',() => {
 
     /** ユーザが所属しているサーバー */
     const servers = ref<TServer[]>([]);
+
+    /** ユーザが選択しているサーバー */
+    const selectedServer = ref<string>();
 
     /** サーバー情報取得中かのフラグをセットする */
     const setIsLoadingServerInfo = ({loading}:{loading:boolean}):void => {
@@ -56,13 +59,24 @@ export const useServersStore = defineStore('sidebar',() => {
                       servers.value.push({
                           id: serverResponse.id,
                           name: serverResponse.name,
-                          iconUrl: URL.createObjectURL(data)
+                          iconUrl: URL.createObjectURL(data),
+                          createdAt:serverResponse.createdAt,
                       })
                   }
 
               }
           }),
-        )
+        );
+
+        servers.value = servers.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    };
+
+    const setSelectedServer = ({serverId}:{serverId?:string}):void => {
+        if(serverId === undefined){
+            selectedServer.value = servers.value[0].id
+            return
+        }
+        selectedServer.value = serverId;
     };
 
     /**
@@ -113,6 +127,8 @@ export const useServersStore = defineStore('sidebar',() => {
     return {
         isLoadingServerInfo,
         servers,
+        selectedServer,
+        setSelectedServer,
         setIsLoadingServerInfo,
         getServers,
         setServers,

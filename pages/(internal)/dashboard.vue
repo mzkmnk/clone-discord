@@ -10,11 +10,10 @@ const serversStore = useServersStore();
 
 const content = ref<string>('');
 
-const groupId = '83748e60-ef6e-4fe2-a016-126f494a839f' // todo
-
 onMounted(async () => {
   serversStore.setIsLoadingServerInfo({loading:true});
   await serversStore.getServers();
+  serversStore.setSelectedServer({serverId:undefined});
   serversStore. setIsLoadingServerInfo({loading:false});
 });
 
@@ -23,7 +22,7 @@ const onClickSubmit = async ():Promise<void> => {
     method:'post',
     body:{
       userId:userStore.user.id,
-      groupId:groupId,
+      groupId:serversStore.selectedServer,
       content:content.value,
     }
   });
@@ -31,13 +30,29 @@ const onClickSubmit = async ():Promise<void> => {
   content.value = '';
 }
 
+watch(() => serversStore.selectedServer,(val) => {
+  console.log(val);
+});
+
 </script>
 
 <template>
   <div class="flex min-h-screen w-screen">
     <Sidebar />
     <div class="flex-1 h-screen">
-      <chat :group-id="groupId" class="overflow-y-auto h-[95%]"></chat>
+      <div class="overflow-y-auto h-[95%]">
+        <div v-if="serversStore.selectedServer === undefined" class="flex flex-col gap-2 py-2">
+          <div v-for="i of Array(20).fill(0)" :key="i" class="flex items-center gap-2 p-2">
+            <div class="min-h-16 min-w-16 bg-gray-200 animate-pulse rounded-full"></div>
+            <div class="flex flex-col gap-2 w-full">
+              <div class="min-h-5 w-full bg-gray-200 animate-pulse rounded-lg"></div>
+              <div class="min-h-5 w-96 bg-gray-200 animate-pulse rounded-lg"></div>
+              <div class="min-h-5 w-[500px] bg-gray-200 animate-pulse rounded-lg"></div>
+            </div>
+          </div>
+        </div>
+        <chat v-else :group-id="serversStore.selectedServer"></chat>
+      </div>
       <div class="h-[5%] w-full flex items-start justify-center">
         <div class="cursor-text w-[99%] mx-auto flex items-center justify-center bg-gray-200 h-5/6 rounded-xl px-2 gap-2">
           <textarea v-model="content" class="resize-none w-full  bg-gray-200 text-slate-800 text-lg focus:outline-none" placeholder="メッセージへ送信" rows="1"></textarea>

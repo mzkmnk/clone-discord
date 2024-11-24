@@ -28,7 +28,12 @@ const chatsChannel = supabase
     .channel('chat')
     .on(
         'postgres_changes',
-        {event: 'INSERT', schema: 'public',table:'group_messages_table'},
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table:'group_messages_table',
+          filter: `groupId=eq.${props.groupId}`
+        },
         async (payload:any) => { // todo 型づけどうしよう
           const chatResponse : TGroupMessagesTable = payload.new;
 
@@ -44,36 +49,63 @@ const chatsChannel = supabase
             createdAt:chatResponse.createdAt,
           });
 
-          chats.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+          // chats.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
         }
     );
 
-onMounted(async () => {
+const fetchGetServers = async () :Promise<void> => {
+  isLoadingChat.value = true;
   const { serverChats } = await $fetch<{serverChats:TGroupMessagesTable[]}>(`api/chat/${props.groupId}`);
 
   await Promise.all(
-    serverChats.map(async (chat) => {
+      serverChats.map(async (chat) => {
 
-      /** ユーザデータを取得する*/
-      const { user } = await $fetch<{user:TUserTable}>(`/api/user/${chat.userId}`);
+        /** ユーザデータを取得する*/
+        const { user } = await $fetch<{user:TUserTable}>(`/api/user/${chat.userId}`);
 
-      chats.value.push({
-        user:{
-          id:chat.userId,
-          username:user.name
-        },
-        id:chat.id,
-        content:chat.content,
-        createdAt:chat.createdAt,
-      });
-    })
- );
+        chats.value.push({
+          user:{
+            id:chat.userId,
+            username:user.name
+          },
+          id:chat.id,
+          content:chat.content,
+          createdAt:chat.createdAt,
+        });
+      })
+  )
+
+  isLoadingChat.value = false;
+};
+
+onMounted(async () => {
+ //  const { serverChats } = await $fetch<{serverChats:TGroupMessagesTable[]}>(`api/chat/${props.groupId}`);
+ //
+ //  await Promise.all(
+ //    serverChats.map(async (chat) => {
+ //
+ //      /** ユーザデータを取得する*/
+ //      const { user } = await $fetch<{user:TUserTable}>(`/api/user/${chat.userId}`);
+ //
+ //      chats.value.push({
+ //        user:{
+ //          id:chat.userId,
+ //          username:user.name
+ //        },
+ //        id:chat.id,
+ //        content:chat.content,
+ //        createdAt:chat.createdAt,
+ //      });
+ //    })
+ // );
+
+  await fetchGetServers();
 
   chats.value.sort((a,b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
   chatsChannel.subscribe();
 
-  isLoadingChat.value = false;
+  // isLoadingChat.value = false;
 });
 
 /** 最下部に自動でスクロールする */
@@ -87,9 +119,14 @@ onMounted(() => {
   scrollToBottom();
 });
 
-watch(chats,() => {
+watch(()=>chats,() => {
   scrollToBottom();
 });
+
+watch(() => props.groupId, async () => {
+  chats.value = [];
+  await fetchGetServers();
+})
 
 </script>
 
