@@ -1,14 +1,18 @@
-<script setup lang="ts">
-const { auth } = useSupabaseClient()
+<script lang="ts" setup>
+
+const supabase = useSupabaseClient();
 
 const login = async () => {
-  await auth.signInWithOAuth({
+  const {error}= await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: 'http://localhost:3000/confirm',
-    },
-  })
+    options:{
+      redirectTo:window.location.origin + '/confirm',
+    }
+  });
+
+  if(error) throw error;
 }
+
 </script>
 
 <template>

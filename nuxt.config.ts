@@ -1,7 +1,28 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import {config} from "dotenv";
+
+config({path:'.env.local'})
+
 export default defineNuxtConfig({
 
-  modules: ['@nuxt/icon', '@nuxtjs/supabase', '@nuxt/eslint','@pinia/nuxt'],
+  imports:{
+    dirs:[
+      // scan all files
+      'composables/**'
+    ]
+  },
+
+  modules: [
+    '@nuxt/icon',
+    '@nuxtjs/supabase',
+    '@nuxt/eslint',
+    '@pinia/nuxt',
+    '@nuxt/image',
+  ],
+  build: {
+    transpile: ['trpc-nuxt']
+  },
   devtools: { enabled: true },
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2024-04-03',
@@ -12,8 +33,19 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
+  supabase:{
+    redirectOptions:{
+      login:'/login',
+      callback:'/confirm',
+      include:undefined,
+      exclude:[],
+      cookieRedirect:false,
+    }
+  },
+
+
   eslint: {
-    checker: true,
     config: {
       stylistic: {
         indent: 2, // indent 2
